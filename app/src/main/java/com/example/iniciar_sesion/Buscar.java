@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +44,10 @@ public class Buscar extends AppCompatActivity {
         btnEliminar = findViewById(R.id.btnEliminar);
         btnActualizar = findViewById(R.id.btnActualizar);
         btnReiniciar = findViewById(R.id.btnReiniciar);
+
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+
     }
     private final String URL = "http://10.0.2.2:3000/alumnos";
 
@@ -95,6 +101,11 @@ public class Buscar extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    private void notificar(String mensaje) {
+        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
+
     private void limpiar() {
         edtBuscarId.setText(null);
         edtApellidos.setText(null);
@@ -103,6 +114,19 @@ public class Buscar extends AppCompatActivity {
         edtNombres.setText(null);
         edtTelefono.setText(null);
     }
+
+    private void validarError(int statusCode, String errorJSON) {
+        if (statusCode == 404) {
+            try {
+                JSONObject jsonObject = new JSONObject(errorJSON);
+                String mensajeError = jsonObject.getString("message");
+                notificar(mensajeError);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private void buscarDatosWS() {
 
         // Obtener el ID
@@ -142,6 +166,9 @@ public class Buscar extends AppCompatActivity {
                         edtDireccion.setText(alumno.getDireccion());
                         edtEmail.setText(alumno.getEmail());
 
+                        btnActualizar.setEnabled(true);
+                        btnEliminar.setEnabled(true);
+
                     } catch (JSONException e) {
                         Log.e("BUSCAR", "Error procesando alumno", e);
                     }
@@ -149,7 +176,19 @@ public class Buscar extends AppCompatActivity {
                     Log.d("BUSCAR", "Respuesta: " + response.toString());
                 },
                 error -> {
-                    error.printStackTrace();
+
+                    // Manejo de errores
+                    // SI el servidor retorna un codigo 40X
+                    NetworkResponse response = error.networkResponse;
+
+                    // Validar si existe un codigo de ERROR
+                    if (response != null && response.data != null) {
+                        // CODIGO DE ERROR
+                        int statusCode = response.statusCode;
+                        String errorJSON = new String(response.data);
+                        this.validarError(statusCode, errorJSON);
+
+                    }
                 }
         );
 
@@ -207,6 +246,18 @@ public class Buscar extends AppCompatActivity {
                 },
                 error -> {
                     Log.e("ACTUALIZAR", "Error Volley", error);
+                    // Manejo de errores
+                    // SI el servidor retorna un codigo 40X
+                    NetworkResponse response = error.networkResponse;
+
+                    // Validar si existe un codigo de ERROR
+                    if (response != null && response.data != null) {
+                        // CODIGO DE ERROR
+                        int statusCode = response.statusCode;
+                        String errorJSON = new String(response.data);
+                        this.validarError(statusCode, errorJSON);
+
+                    }
                 }
         );
 
@@ -248,7 +299,18 @@ public class Buscar extends AppCompatActivity {
 
                 },
                 error -> {
-                    error.printStackTrace();
+                    // Manejo de errores
+                    // SI el servidor retorna un codigo 40X
+                    NetworkResponse response = error.networkResponse;
+
+                    // Validar si existe un codigo de ERROR
+                    if (response != null && response.data != null) {
+                        // CODIGO DE ERROR
+                        int statusCode = response.statusCode;
+                        String errorJSON = new String(response.data);
+                        this.validarError(statusCode, errorJSON);
+
+                    }
                 }
         );
 

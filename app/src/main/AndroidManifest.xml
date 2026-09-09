@@ -15,18 +15,19 @@
         android:theme="@style/Theme.Iniciar_sesion">
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".Indice"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity
-            android:name=".Indice"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Listar"
             android:exported="false"
