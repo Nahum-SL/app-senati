@@ -26,6 +26,10 @@ public class Buscar extends AppCompatActivity {
     EditText edtBuscarId, edtApellidos, edtNombres, edtTelefono, edtDireccion, edtEmail;
     Button btnBuscar, btnEliminar, btnActualizar, btnReiniciar;
     RequestQueue requestQueue;
+
+    /**
+     * Carga los datos necesarios para el funcionamiento de la logica del activity
+     * */
     private void loadUI() {
         edtBuscarId = findViewById(R.id.edtBuscarId);
         edtApellidos = findViewById(R.id.edtApellidos);
@@ -68,6 +72,10 @@ public class Buscar extends AppCompatActivity {
         });
     }
 
+    /**
+     * Clase reutilizable para acciones de riesgo, donde espera una confirmacion
+     * para realizar un cambio
+     * */
     private void mostrarPregunta(String mensaje, Runnable accionPositiva) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Buscar.this);
         builder.setTitle("Confirmación");

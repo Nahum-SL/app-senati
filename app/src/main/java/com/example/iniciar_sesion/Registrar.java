@@ -31,6 +31,9 @@ public class Registrar extends AppCompatActivity {
 
     private final String URL = "http://10.0.2.2:3000/alumnos";
 
+    /**
+     * Carga los datos necesarios para el funcionamiento de la logica del activity
+     * */
     private void loadUI() {
         edtApellidosRE = findViewById(R.id.edtApellidosRE);
         edtNombresRE = findViewById(R.id.edtNombresRE);
@@ -42,6 +45,10 @@ public class Registrar extends AppCompatActivity {
         btnCancelar = findViewById(R.id.btnCancelar);
     }
 
+    /**
+     * Se encarga de verificar que todos los campos esten llenos
+     * antes de enviar los datos
+     * */
     private boolean verificarVacios() {
         if (edtApellidosRE.getText().toString().isEmpty()) {
             edtApellidosRE.setError("Ingrese sus apellidos");
@@ -71,6 +78,9 @@ public class Registrar extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Limpia las cajas de texto
+     * */
     private void limpiar() {
         edtApellidosRE.setText(null);
         edtDireccionRE.setText(null);
@@ -79,6 +89,12 @@ public class Registrar extends AppCompatActivity {
         edtTelefonoRE.setText(null);
     }
 
+    /**
+     * Permite modificar las notificaciones que se mostraran despues de un evento
+     * */
+    private void notificar(String mensaje, Integer id) {
+        Toast.makeText(getApplicationContext(), mensaje + " - ID: " + id, Toast.LENGTH_SHORT).show();
+    }
     private void notificar(String mensaje) {
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
@@ -101,6 +117,9 @@ public class Registrar extends AppCompatActivity {
         });
     }
 
+    /**
+     * Envia los datos ingresados del formulario a la base de datos
+     * */
     private void registrarAlumno() {
         // Objeto conexion
         requestQueue = Volley.newRequestQueue(this);
@@ -125,7 +144,7 @@ public class Registrar extends AppCompatActivity {
             jsonObject.put("direccion", alumno.getDireccion());
             jsonObject.put("email", alumno.getEmail());
         } catch (JSONException e) {
-            Log.e("Registrr", "Error creando un JSON", e);
+            Log.e("Registrar", "Error creando un JSON", e);
             return;
         };
 
@@ -136,14 +155,23 @@ public class Registrar extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        notificar("Grabado correctamente");
-                        limpiar();
+                        try {
+
+                            String mensaje = jsonObject.getString("message");
+                            Integer id = jsonObject.getInt("id");
+
+                            notificar(mensaje, id);
+                            limpiar();
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        notificar("No se pudo grabar");
+                        notificar("No se pudo guardar");
                     }
                 }
         );

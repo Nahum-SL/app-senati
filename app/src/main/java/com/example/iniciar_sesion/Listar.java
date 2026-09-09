@@ -29,6 +29,9 @@ public class Listar extends AppCompatActivity {
     // Emulador Android Studio -> 10.0.2.2 - PC / (IPv4 - wifi) Con USB movil - http://localhost:3000/alumnos
     private final String URL = "http://10.0.2.2:3000/alumnos";
 
+    /**
+     * Carga los datos necesarios para el funcionamiento de la logica del activity
+     * */
     private void loadUI() {
         recyclerAlumnos = findViewById(R.id.recyclerAlumnos);
         // Configurar RecyclerView
@@ -48,6 +51,9 @@ public class Listar extends AppCompatActivity {
         obtenerDatosWS();
     }
 
+    /**
+     * Obtiene los datos que envia el WebService, desde la base de datos en MySQL
+     * */
     private void obtenerDatosWS() {
         requestQueue = Volley.newRequestQueue(this);
 
@@ -95,6 +101,9 @@ public class Listar extends AppCompatActivity {
         Log.d("WS", "5. Petición enviada de Volley");
     }
 
+    /**
+     * Permite renderizar los registros antes de cargarlos a la UI
+     * */
     private void renderizarAlumnos(JSONObject jsonObject) {
         try {
             // Obtener el array
