@@ -113,6 +113,10 @@ public class Buscar extends AppCompatActivity {
         edtEmail.setText(null);
         edtNombres.setText(null);
         edtTelefono.setText(null);
+
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+
     }
 
     private void validarError(int statusCode, String errorJSON) {
