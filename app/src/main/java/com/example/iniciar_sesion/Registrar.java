@@ -29,7 +29,7 @@ public class Registrar extends AppCompatActivity {
     Button btnGuardar, btnCancelar;
     RequestQueue requestQueue;
 
-    private final String URL = "http://localhost:3000/alumnos";
+    private final String URL = "http://10.0.2.2:3000/alumnos";
 
     private void loadUI() {
         edtApellidosRE = findViewById(R.id.edtApellidosRE);

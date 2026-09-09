@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -25,8 +26,8 @@ public class Listar extends AppCompatActivity {
     RecyclerView recyclerAlumnos;
     ArrayList<Alumno> listaAlumnos;
     AlumnoAdapter alumnoAdapter;
-    // Emulador Android Studio -> 10.0.2.2 - PC / (IPv4 - wifi) Con USB movil
-    private final String URL = "http://localhost:3000/alumnos";
+    // Emulador Android Studio -> 10.0.2.2 - PC / (IPv4 - wifi) Con USB movil - http://localhost:3000/alumnos
+    private final String URL = "http://10.0.2.2:3000/alumnos";
 
     private void loadUI() {
         recyclerAlumnos = findViewById(R.id.recyclerAlumnos);
@@ -51,18 +52,18 @@ public class Listar extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 URL,
                 null,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray jsonArray) {
+                    public void onResponse(JSONObject jsonObject) {
                         // Logs para verificar la entrada de datos
                         Log.d("WS", "3. RESPUESTA RECIBIDA");
-                        Log.d("WS", "JSON: " + jsonArray.toString());
+                        Log.d("WS", "JSON: " + jsonObject.toString());
 
-                        renderizarAlumnos(jsonArray);
+                        renderizarAlumnos(jsonObject);
                     }
                 },
                 new Response.ErrorListener() {
@@ -89,24 +90,27 @@ public class Listar extends AppCompatActivity {
                 }
         );
 
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(jsonObjectRequest);
 
         Log.d("WS", "5. Petición enviada de Volley");
     }
 
-    private void renderizarAlumnos(JSONArray jsonArray) {
+    private void renderizarAlumnos(JSONObject jsonObject) {
         try {
+            // Obtener el array
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
             listaAlumnos.clear();
+
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                JSONObject alumnoJSON = jsonArray.getJSONObject(i);
 
-                int id = jsonObject.getInt("id");
+                int id = alumnoJSON.getInt("id");
 
-                String apellidos = jsonObject.getString("apellidos");
-                String nombres = jsonObject.getString("nombres");
-                String telefono = jsonObject.getString("telefono");
-                String direccion = jsonObject.getString("direccion");
-                String email = jsonObject.getString("email");
+                String apellidos = alumnoJSON.getString("apellidos");
+                String nombres = alumnoJSON.getString("nombres");
+                String telefono = alumnoJSON.getString("telefono");
+                String direccion = alumnoJSON.getString("direccion");
+                String email = alumnoJSON.getString("email");
 
                 Alumno alumno = new Alumno(
                         id,
@@ -118,6 +122,7 @@ public class Listar extends AppCompatActivity {
                 );
                 listaAlumnos.add(alumno);
             }
+
             alumnoAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             Log.e(

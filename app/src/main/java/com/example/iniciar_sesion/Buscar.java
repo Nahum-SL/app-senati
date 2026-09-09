@@ -39,13 +39,14 @@ public class Buscar extends AppCompatActivity {
         btnActualizar = findViewById(R.id.btnActualizar);
         btnReiniciar = findViewById(R.id.btnReiniciar);
     }
-    private final String URL = "http://localhost:3000/alumnos";
+    private final String URL = "http://10.0.2.2:3000/alumnos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_buscar);
+        requestQueue = Volley.newRequestQueue(this);
 
         this.loadUI();
 
@@ -95,10 +96,16 @@ public class Buscar extends AppCompatActivity {
         edtTelefono.setText(null);
     }
     private void buscarDatosWS() {
-        requestQueue = Volley.newRequestQueue(this);
 
-        // Establecer el ID
-        String id = edtBuscarId.getText().toString();
+        // Obtener el ID
+        String id = edtBuscarId.getText().toString().trim();
+
+        // Validar que exista la ID antes de una accion
+        if (id.isEmpty()) {
+            edtBuscarId.setError("Ingrese un ID");
+            edtBuscarId.requestFocus();
+            return;
+        }
 
         // Construir la URL apartir de el ID
         String urlBuscar = URL + "/" + id;
@@ -110,13 +117,15 @@ public class Buscar extends AppCompatActivity {
                 response -> {
                     try {
 
+                        JSONObject data = response.getJSONObject("data");
+
                         Alumno alumno = new Alumno(
-                                response.getInt("id"),
-                                response.getString("apellidos"),
-                                response.getString("nombres"),
-                                response.getString("telefono"),
-                                response.getString("direccion"),
-                                response.getString("email")
+                                data.getInt("id"),
+                                data.getString("apellidos"),
+                                data.getString("nombres"),
+                                data.getString("telefono"),
+                                data.getString("direccion"),
+                                data.getString("email")
                         );
 
                         edtApellidos.setText(alumno.getApellidos());
@@ -140,11 +149,16 @@ public class Buscar extends AppCompatActivity {
     };
 
     private void actualizarDatosWS() {
-        requestQueue = Volley.newRequestQueue(this);
 
         // Obtener el ID
-        String id = edtBuscarId.getText().toString();
+        String id = edtBuscarId.getText().toString().trim();
 
+        // Validar que exista la ID antes de una accion
+        if (id.isEmpty()) {
+            edtBuscarId.setError("Ingrese un ID");
+            edtBuscarId.requestFocus();
+            return;
+        }
         // Configurar la URL
         String urlBuscar = URL + "/" + id;
 
@@ -168,13 +182,20 @@ public class Buscar extends AppCompatActivity {
                 urlBuscar,
                 jsonObject,
                 response -> {
+                    try {
+                        String mensaje = response.getString("message");
 
-                    new AlertDialog.Builder(Buscar.this)
-                            .setTitle("Actualización")
-                            .setMessage("Alumno actualizado correctamente")
-                            .setPositiveButton("Ok", (dialog, which) -> {
-                                limpiar();
-                            }).show();
+                        new AlertDialog.Builder(Buscar.this)
+                                .setTitle("Actualización")
+                                .setMessage(mensaje)
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    limpiar();
+                                })
+                                .show();
+
+                    } catch (JSONException e) {
+                        Log.e("ACTUALIZAR", "Error procesando respuesta", e);
+                    }
                 },
                 error -> {
                     Log.e("ACTUALIZAR", "Error Volley", error);
@@ -185,10 +206,16 @@ public class Buscar extends AppCompatActivity {
     }
 
     private void eliminarDatosWS() {
-        requestQueue = Volley.newRequestQueue(this);
 
-        // Establecer el ID
-        String id = edtBuscarId.getText().toString();
+        // Obtener el ID
+        String id = edtBuscarId.getText().toString().trim();
+
+        // Validar que exista la ID antes de una accion
+        if (id.isEmpty()) {
+            edtBuscarId.setError("Ingrese un ID");
+            edtBuscarId.requestFocus();
+            return;
+        }
 
         // Configurar la URL
         String urlBuscar = URL + "/" + id;
@@ -198,12 +225,19 @@ public class Buscar extends AppCompatActivity {
                 urlBuscar,
                 null,
                 response -> {
-                    new AlertDialog.Builder(Buscar.this)
-                            .setTitle("Eliminación")
-                            .setMessage("Alumno eliminado correctamente")
-                            .setPositiveButton("OK", (dialog, which) -> {
-                                limpiar();
-                            }).show();
+                    try {
+                        String mensaje = response.getString("message");
+
+                        new AlertDialog.Builder(Buscar.this)
+                                .setTitle("Eliminación")
+                                .setMessage(mensaje)
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    limpiar();
+                                }).show();
+                    } catch (JSONException e) {
+                        Log.e("ELIMINAR", "Error procesando respuesta", e);
+                    }
+
                 },
                 error -> {
                     error.printStackTrace();
