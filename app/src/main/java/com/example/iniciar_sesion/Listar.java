@@ -62,19 +62,14 @@ public class Listar extends AppCompatActivity {
                 Request.Method.GET,
                 URL,
                 null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        // Logs para verificar la entrada de datos
-                        Log.d("WS", "3. RESPUESTA RECIBIDA");
-                        Log.d("WS", "JSON: " + jsonObject.toString());
+                response -> {
+                // Logs para verificar la entrada de datos
+                Log.d("WS", "3. RESPUESTA RECIBIDA");
+                Log.d("WS", "JSON: " + response.toString());
 
-                        renderizarAlumnos(jsonObject);
-                    }
+                renderizarAlumnos(response);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
                         // Logs para verificar el Error
                         Log.e("ErrorWS", "4. ERROR");
                         Log.e("ErrorWS", "Tipo" + error.getClass().getName());
@@ -92,7 +87,7 @@ public class Listar extends AppCompatActivity {
                                 Log.e("ErrorWS", "Respuesta servidor: " + respuesta);
                             }
                         }
-                    }
+
                 }
         );
 

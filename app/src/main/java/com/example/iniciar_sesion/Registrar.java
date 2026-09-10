@@ -104,6 +104,8 @@ public class Registrar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registrar);
+        // Objeto conexion
+        requestQueue = Volley.newRequestQueue(this);
 
         this.loadUI();
 
@@ -121,8 +123,6 @@ public class Registrar extends AppCompatActivity {
      * Envia los datos ingresados del formulario a la base de datos
      * */
     private void registrarAlumno() {
-        // Objeto conexion
-        requestQueue = Volley.newRequestQueue(this);
 
         // Usamos la clase Alumno para asignar los datos
         Alumno alumno = new Alumno(
@@ -152,27 +152,41 @@ public class Registrar extends AppCompatActivity {
                 Request.Method.POST,
                 URL,
                 jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
+                response -> {
                         try {
+                            String mensaje = response.getString("message");
 
-                            String mensaje = jsonObject.getString("message");
-                            Integer id = jsonObject.getInt("id");
-
-                            notificar(mensaje, id);
+                            notificar(mensaje);
                             limpiar();
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        notificar("No se pudo guardar");
+                error -> {
+                    Log.e("CREAR", "Error Volley", error);
+
+                    if (error.networkResponse != null) {
+                        Log.e(
+                                "CREAR",
+                                "Código HTTP: " + error.networkResponse.statusCode
+                        );
+
+                        if (error.networkResponse.data != null) {
+                            String respuesta = new String(
+                                    error.networkResponse.data,
+                                    java.nio.charset.StandardCharsets.UTF_8
+                            );
+
+                            Log.e("CREAR", "Respuesta servidor: " + respuesta);
+                        }
                     }
+
+                    Toast.makeText(
+                            Registrar.this,
+                            "Error al registrar alumno",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
         );
 
