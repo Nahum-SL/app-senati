@@ -9,13 +9,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Indice extends AppCompatActivity {
 
-    Button btnListar, btnRegistrar, btnBuscar, btnAcercaDe;
+    Button btnListaSimple, btnListar, btnRegistrar, btnBuscar, btnAcercaDe;
 
     private void loadUI() {
         btnListar = findViewById(R.id.btnListar);
         btnRegistrar = findViewById(R.id.btnRegistrar);
         btnBuscar = findViewById(R.id.btnBuscar);
         btnAcercaDe = findViewById(R.id.btnAcercaDe);
+        btnListaSimple = findViewById(R.id.btnListaSimple);
     }
 
     private void openActivity(Class interfaz) {
@@ -32,6 +33,9 @@ public class Indice extends AppCompatActivity {
 
         this.loadUI();
 
+        btnListaSimple.setOnClickListener(view -> {
+            openActivity(ListaSimple.class);
+        });
         btnListar.setOnClickListener(view -> {
             openActivity(Listar.class);
         });

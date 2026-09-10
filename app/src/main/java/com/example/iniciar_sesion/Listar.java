@@ -46,6 +46,7 @@ public class Listar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_listar);
+        requestQueue = Volley.newRequestQueue(this);
 
         this.loadUI();
         obtenerDatosWS();
@@ -55,33 +56,24 @@ public class Listar extends AppCompatActivity {
      * Obtiene los datos que envia el WebService, desde la base de datos en MySQL
      * */
     private void obtenerDatosWS() {
-        requestQueue = Volley.newRequestQueue(this);
-
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 URL,
                 null,
                 response -> {
                 // Logs para verificar la entrada de datos
-                Log.d("WS", "3. RESPUESTA RECIBIDA");
+                Log.d("WS", "RESPUESTA RECIBIDA");
                 Log.d("WS", "JSON: " + response.toString());
 
                 renderizarAlumnos(response);
                 },
                 error -> {
                         // Logs para verificar el Error
-                        Log.e("ErrorWS", "4. ERROR");
+                        Log.e("ErrorWS", "ERROR");
                         Log.e("ErrorWS", "Tipo" + error.getClass().getName());
                         Log.e("ErrorWS", "Mensaje: " + error.toString());
 
-                        if (error.networkResponse != null) {
-                            Log.e(
-                            "ErrorWS",
-                            "Código HTTP: "
-                                + error.networkResponse.statusCode
-                            );
-
+                        if (error.networkResponse != null) {Log.e("ErrorWS", "Código HTTP: " + error.networkResponse.statusCode);
                             if (error.networkResponse != null) {
                                 String respuesta = new String(error.networkResponse.data);
                                 Log.e("ErrorWS", "Respuesta servidor: " + respuesta);
@@ -93,7 +85,7 @@ public class Listar extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
 
-        Log.d("WS", "5. Petición enviada de Volley");
+        Log.d("WS", "Petición enviada de Volley");
     }
 
     /**
@@ -129,10 +121,7 @@ public class Listar extends AppCompatActivity {
 
             alumnoAdapter.notifyDataSetChanged();
         } catch (Exception e) {
-            Log.e(
-                "ErrorParseo",
-                e.toString()
-            );
+            Log.e("ErrorParseo", e.toString());
         }
     }
 }
