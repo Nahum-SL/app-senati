@@ -102,12 +102,29 @@ public class Buscar extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Muestra una notificacion al realizar una operacion de un metodo
+     * Recibiendo el parametro titulo y "mensaje"
+     * */
+    private void mostrarNotificacion(String titulo, String mensaje) {
+        new AlertDialog.Builder(Buscar.this)
+                .setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    limpiar();
+                })
+                .show();
+    }
+
     private void notificar(String mensaje) {
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Limpia las cajas de texto
+     * */
     private void limpiar() {
-        edtBuscarId.setText(null);
+        // edtBuscarId.setText(null);
         edtApellidos.setText(null);
         edtDireccion.setText(null);
         edtEmail.setText(null);
@@ -119,12 +136,21 @@ public class Buscar extends AppCompatActivity {
 
     }
 
+    private void verificarId(String id) {
+        // Validar que exista la ID antes de una accion
+        if (id.isEmpty()) {
+            edtBuscarId.setError("Ingrese un ID");
+            edtBuscarId.requestFocus();
+        }
+    }
+
     private void validarError(int statusCode, String errorJSON) {
         if (statusCode == 404) {
             try {
                 JSONObject jsonObject = new JSONObject(errorJSON);
                 String mensajeError = jsonObject.getString("message");
                 notificar(mensajeError);
+                this.limpiar();
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -132,23 +158,15 @@ public class Buscar extends AppCompatActivity {
     }
 
     private void buscarDatosWS() {
-
         // Obtener el ID
         String id = edtBuscarId.getText().toString().trim();
-
-        // Validar que exista la ID antes de una accion
-        if (id.isEmpty()) {
-            edtBuscarId.setError("Ingrese un ID");
-            edtBuscarId.requestFocus();
-            return;
-        }
-
+        verificarId(id);
         // Construir la URL apartir de el ID
-        String urlBuscar = URL + "/" + id;
+        String endpoint = URL + "/" + id;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                urlBuscar,
+                endpoint,
                 null,
                 response -> {
                     try {
@@ -180,7 +198,6 @@ public class Buscar extends AppCompatActivity {
                     Log.d("BUSCAR", "Respuesta: " + response.toString());
                 },
                 error -> {
-
                     // Manejo de errores
                     // SI el servidor retorna un codigo 40X
                     NetworkResponse response = error.networkResponse;
@@ -191,7 +208,6 @@ public class Buscar extends AppCompatActivity {
                         int statusCode = response.statusCode;
                         String errorJSON = new String(response.data);
                         this.validarError(statusCode, errorJSON);
-
                     }
                 }
         );
@@ -200,19 +216,12 @@ public class Buscar extends AppCompatActivity {
     };
 
     private void actualizarDatosWS() {
-
         // Obtener el ID
         String id = edtBuscarId.getText().toString().trim();
-
         // Validar que exista la ID antes de una accion
-        if (id.isEmpty()) {
-            edtBuscarId.setError("Ingrese un ID");
-            edtBuscarId.requestFocus();
-            return;
-        }
+        verificarId(id);
         // Configurar la URL
-        String urlBuscar = URL + "/" + id;
-
+        String endpoint = URL + "/" + id;
         // Crear el Objeto JSON con los nuevos datos
         JSONObject jsonObject = new JSONObject();
 
@@ -230,19 +239,12 @@ public class Buscar extends AppCompatActivity {
         // Crear la petición
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.PUT,
-                urlBuscar,
+                endpoint,
                 jsonObject,
                 response -> {
                     try {
                         String mensaje = response.getString("message");
-
-                        new AlertDialog.Builder(Buscar.this)
-                                .setTitle("Actualización")
-                                .setMessage(mensaje)
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    limpiar();
-                                })
-                                .show();
+                        mostrarNotificacion("Actualizar", mensaje);
 
                     } catch (JSONException e) {
                         Log.e("ACTUALIZAR", "Error procesando respuesta", e);
@@ -269,34 +271,21 @@ public class Buscar extends AppCompatActivity {
     }
 
     private void eliminarDatosWS() {
-
         // Obtener el ID
         String id = edtBuscarId.getText().toString().trim();
-
         // Validar que exista la ID antes de una accion
-        if (id.isEmpty()) {
-            edtBuscarId.setError("Ingrese un ID");
-            edtBuscarId.requestFocus();
-            return;
-        }
-
+        verificarId(id);
         // Configurar la URL
-        String urlBuscar = URL + "/" + id;
-
+        String endpoint = URL + "/" + id;
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.DELETE,
-                urlBuscar,
+                endpoint,
                 null,
                 response -> {
                     try {
                         String mensaje = response.getString("message");
+                        mostrarNotificacion("Eliminar", mensaje);
 
-                        new AlertDialog.Builder(Buscar.this)
-                                .setTitle("Eliminación")
-                                .setMessage(mensaje)
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    limpiar();
-                                }).show();
                     } catch (JSONException e) {
                         Log.e("ELIMINAR", "Error procesando respuesta", e);
                     }
@@ -313,7 +302,6 @@ public class Buscar extends AppCompatActivity {
                         int statusCode = response.statusCode;
                         String errorJSON = new String(response.data);
                         this.validarError(statusCode, errorJSON);
-
                     }
                 }
         );
