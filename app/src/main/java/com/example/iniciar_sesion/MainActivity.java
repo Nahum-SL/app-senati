@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 public class MainActivity extends AppCompatActivity {
 
     EditText edtUsuario, edtPassword;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), interfaz);
         startActivity(i);
     }
+
 
     private boolean verificarVacio() {
         if (edtUsuario.getText().toString().isEmpty()) {

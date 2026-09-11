@@ -12,5 +12,11 @@
         <item name="textAllCaps">true</item>
     </style>
 
+    <style name="Theme.Iniciar_sesion.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/cby</item>
+        <item name="postSplashScreenTheme">@style/Theme.Iniciar_sesion</item>
+    </style>
+
     <style name="Theme.Iniciar_sesion" parent="Base.Theme.Iniciar_sesion" />
 </resources>

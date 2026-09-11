@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 public class Indice extends AppCompatActivity {
 
@@ -19,14 +20,16 @@ public class Indice extends AppCompatActivity {
         btnListaSimple = findViewById(R.id.btnListaSimple);
     }
 
-    private void openActivity(Class interfaz) {
-        Intent i = new Intent(getApplicationContext(), interfaz);
+    private void openActivity(Class<?> interfaz) {
+        Intent i = new Intent(Indice.this, interfaz);
         startActivity(i);
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Instala el Splash screen con la imagen predefinida desde AndroidManifest.xml
+        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_indice);
