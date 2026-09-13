@@ -19,7 +19,6 @@ public class Alumno {
     }
 
     public Alumno(String apellidos, String nombres, String telefono, String direccion, String email) {
-        this.id = id;
         this.apellidos = apellidos;
         this.nombres = nombres;
         this.telefono = telefono;

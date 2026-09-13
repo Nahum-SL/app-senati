@@ -29,7 +29,6 @@ public class Indice extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Instala el Splash screen con la imagen predefinida desde AndroidManifest.xml
-        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_indice);

@@ -92,9 +92,6 @@ public class Registrar extends AppCompatActivity {
     /**
      * Permite modificar las notificaciones que se mostraran despues de un evento
      * */
-    private void notificar(String mensaje, Integer id) {
-        Toast.makeText(getApplicationContext(), mensaje + " - ID: " + id, Toast.LENGTH_SHORT).show();
-    }
     private void notificar(String mensaje) {
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
