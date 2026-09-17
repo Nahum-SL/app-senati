@@ -2,6 +2,7 @@ package com.example.iniciar_sesion;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +22,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Listar extends AppCompatActivity {
+// Esta clase tiene herencia | contrato AlumnoAdapter.onActionListener
+public class Listar extends AppCompatActivity implements AlumnoAdapter.OnActionListener{
     RequestQueue requestQueue;
     RecyclerView recyclerAlumnos;
     ArrayList<Alumno> listaAlumnos;
@@ -34,10 +36,12 @@ public class Listar extends AppCompatActivity {
      * */
     private void loadUI() {
         recyclerAlumnos = findViewById(R.id.recyclerAlumnos);
+
         // Configurar RecyclerView
         recyclerAlumnos.setLayoutManager(new LinearLayoutManager(this));
         listaAlumnos = new ArrayList<>();
-        alumnoAdapter = new AlumnoAdapter(listaAlumnos);
+        // Constructor 2
+        alumnoAdapter = new AlumnoAdapter(this, listaAlumnos, this);
         recyclerAlumnos.setAdapter(alumnoAdapter);
     }
 
@@ -51,6 +55,7 @@ public class Listar extends AppCompatActivity {
         this.loadUI();
         obtenerDatosWS();
     }
+
 
     /**
      * Obtiene los datos que envia el WebService, desde la base de datos en MySQL
@@ -123,5 +128,10 @@ public class Listar extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("ErrorParseo", e.toString());
         }
+    }
+
+    @Override
+    public void onVer() {
+        Toast.makeText(this, "Hola", Toast.LENGTH_SHORT).show();
     }
 }

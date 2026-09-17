@@ -10,7 +10,7 @@ import androidx.core.splashscreen.SplashScreen;
 
 public class Indice extends AppCompatActivity {
 
-    Button btnListaSimple, btnListar, btnRegistrar, btnBuscar, btnAcercaDe;
+    Button btnListaSimple, btnListar, btnRegistrar, btnBuscar, btnAcercaDe, btnCursoLista;
 
     private void loadUI() {
         btnListar = findViewById(R.id.btnListar);
@@ -18,6 +18,7 @@ public class Indice extends AppCompatActivity {
         btnBuscar = findViewById(R.id.btnBuscar);
         btnAcercaDe = findViewById(R.id.btnAcercaDe);
         btnListaSimple = findViewById(R.id.btnListaSimple);
+        btnCursoLista = findViewById(R.id.btnCursoLista);
     }
 
     private void openActivity(Class<?> interfaz) {
@@ -41,6 +42,10 @@ public class Indice extends AppCompatActivity {
         btnListar.setOnClickListener(view -> {
             openActivity(Listar.class);
         });
+        btnCursoLista.setOnClickListener(view -> {
+            openActivity(CursosLista.class);
+        });
+
         btnRegistrar.setOnClickListener(view -> {
             openActivity(Registrar.class);
         });

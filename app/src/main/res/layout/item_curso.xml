@@ -18,20 +18,24 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtNombre"
+                android:id="@+id/txtNombreC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txtTelefono"
+                android:id="@+id/txtHorasC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp" />
 
             <TextView
-                android:id="@+id/txtEmail"
+                android:id="@+id/txtPrecioC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/txtResponsableC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -42,12 +46,11 @@
             android:layout_weight="1"
             android:layout_height="wrap_content">
             <Button
-                android:id="@+id/btnUser"
+                android:id="@+id/btnCurso"
                 android:text="Ver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
-
 
 </LinearLayout>
