@@ -46,10 +46,16 @@
             android:layout_weight="1"
             android:layout_height="wrap_content">
             <Button
-                android:id="@+id/btnCurso"
+                android:id="@+id/btnCursoVer"
                 android:text="Ver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btnCursoBorrar"
+                android:text="Borrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
     </LinearLayout>
 

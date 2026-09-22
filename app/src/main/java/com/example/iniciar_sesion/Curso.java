@@ -6,7 +6,6 @@ public class Curso {
     private int horas;
     private double precio;
     private String responsable;
-
     public Curso(int id, String nombre, int horas, double precio, String responsable) {
         this.id = id;
         this.nombre = nombre;

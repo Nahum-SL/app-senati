@@ -2,6 +2,7 @@ package com.example.iniciar_sesion;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +14,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.iniciar_sesion.utils.ApiConfig;
+import com.example.iniciar_sesion.utils.DialogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,10 +28,17 @@ public class CursosLista extends AppCompatActivity implements CursoAdapter.OnAct
     RecyclerView recyclerCursos;
     ArrayList<Curso> listaCursos;
     CursoAdapter cursoAdapter;
+    DialogUtils mostrarPregunta = new DialogUtils();
+    // UTILS
+    String URL = ApiConfig.CURSOS;
 
-    private final String URL = "http://10.0.2.2:3000/cursos";
+    // Components
+    Button btnCursoVer, btnCursoBorrar;
 
     private void loadUI() {
+        btnCursoVer = findViewById(R.id.btnCursoVer);
+        btnCursoBorrar = findViewById(R.id.btnCursoBorrar);
+
         recyclerCursos = findViewById(R.id.recyclerCursos);
         // confiuracion
         recyclerCursos.setLayoutManager(new LinearLayoutManager(this));
@@ -45,9 +55,8 @@ public class CursosLista extends AppCompatActivity implements CursoAdapter.OnAct
         requestQueue = Volley.newRequestQueue(this);
 
         this.loadUI();
+
         obtenerDatosWS();
-
-
     }
 
     private void obtenerDatosWS() {
@@ -57,21 +66,21 @@ public class CursosLista extends AppCompatActivity implements CursoAdapter.OnAct
                 null,
                 response -> {
                     // Logs para verificar la entrada de datos
-                    Log.d("WS", "RESPUESTA RECIBIDA");
-                    Log.d("WS", "JSON: " + response.toString());
+                    Log.d("CURSO_WS", "RESPUESTA RECIBIDA");
+                    Log.d("CURSO_WS", "JSON: " + response.toString());
 
                     renderizarCursos(response);
                 },
                 error -> {
                     // Logs para verificar el Error
-                    Log.e("ErrorWS", "ERROR");
-                    Log.e("ErrorWS", "Tipo" + error.getClass().getName());
-                    Log.e("ErrorWS", "Mensaje: " + error.toString());
+                    Log.e("CURSO_ErrorWS", "ERROR");
+                    Log.e("CURSO_ErrorWS", "Tipo" + error.getClass().getName());
+                    Log.e("CURSO_ErrorWS", "Mensaje: " + error.toString());
 
                     if (error.networkResponse != null) {Log.e("ErrorWS", "Código HTTP: " + error.networkResponse.statusCode);
                         if (error.networkResponse != null) {
                             String respuesta = new String(error.networkResponse.data);
-                            Log.e("ErrorWS", "Respuesta servidor: " + respuesta);
+                            Log.e("CURSO_ErrorWS", "Respuesta servidor: " + respuesta);
                         }
                     }
 
@@ -80,7 +89,7 @@ public class CursosLista extends AppCompatActivity implements CursoAdapter.OnAct
 
         requestQueue.add(jsonObjectRequest);
 
-        Log.d("WS", "Petición enviada de Volley");
+        Log.d("CURSO_WS", "Petición enviada de Volley");
     }
 
     /**
@@ -114,12 +123,47 @@ public class CursosLista extends AppCompatActivity implements CursoAdapter.OnAct
 
             cursoAdapter.notifyDataSetChanged();
         } catch (Exception e) {
-            Log.e("ErrorParseo", e.toString());
+            Log.e("CURSO_ErrorParseo", e.toString());
         }
     }
 
+    private void eliminarCurso(int id) {
+        String endpoint = URL + "/" + id;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.DELETE,
+                endpoint,
+                null,
+                response -> {
+                    Toast.makeText(this, "Curso eliminado correctamente", Toast.LENGTH_SHORT).show();
+                    obtenerDatosWS();
+                },
+                error -> {
+                    Log.e("CURSO_DELETE", error.toString());
+                }
+        );
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    /**
+     * Recibe como parametro el id y hace uso de la clase DialogUtils.Confirmar
+     * Para proceder a ejecutar el metodo empezando con una confirmación
+     * */
+    private void confirmarEliminacion(int id) {
+        DialogUtils.confirmar(
+                this,
+                "¿Estas seguro de eliminar el curso con ID " + id + " ?",
+                () -> eliminarCurso(id));
+    }
+
     @Override
-    public void onVer() {
-        Toast.makeText(this, "Hola", Toast.LENGTH_SHORT).show();
+    public void onVer(int id) {
+        Toast.makeText(this, "ID del curso: " + id, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBorrar(int id) {
+        confirmarEliminacion(id);
     }
 }

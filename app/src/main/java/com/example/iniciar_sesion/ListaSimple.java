@@ -4,19 +4,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.iniciar_sesion.utils.ApiConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,8 +23,7 @@ public class ListaSimple extends AppCompatActivity {
 
     ListView lstAlumnosSimple;
     RequestQueue requestQueue;
-    private final String URL = "http://10.0.2.2:3000/alumnos";
-
+    String URL = ApiConfig.ALUMNOS;
     private void loadUI() {
         lstAlumnosSimple = findViewById(R.id.lsvAlumnosSimple);
     }

@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.iniciar_sesion.utils.ApiConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,8 +26,8 @@ public class Listar extends AppCompatActivity implements AlumnoAdapter.OnActionL
     RecyclerView recyclerAlumnos;
     ArrayList<Alumno> listaAlumnos;
     AlumnoAdapter alumnoAdapter;
-    // Emulador Android Studio -> 10.0.2.2 - PC / (IPv4 - wifi) Con USB movil - http://localhost:3000/alumnos
-    private final String URL = "http://10.0.2.2:3000/alumnos";
+
+    String URL = ApiConfig.ALUMNOS;
 
     /**
      * Carga los datos necesarios para el funcionamiento de la logica del activity

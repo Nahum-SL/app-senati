@@ -20,7 +20,11 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
     // Va a tener una interfaz
     public interface OnActionListener {
         // Definir los metodos
-        void onVer();
+
+        // El Adapter no debería hacer la petición HTTP.
+        // Se necesita el pasar el ID asi que se le asigna el parametro
+        void onVer(int id);
+        void onBorrar(int id);
     }
 
     public CursoAdapter(Context context, ArrayList<Curso> listaCursos, OnActionListener listener) {
@@ -39,14 +43,19 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
     @Override
     public void onBindViewHolder(@NonNull CursoViewHolder holder, int position) {
         Curso curso = listaCursos.get(position);
-        holder.txtNombreC.setText(String.format(curso.getNombre()));
+        holder.txtNombreC.setText(curso.getNombre());
         holder.txtHorasC.setText(String.format("Horas: " + curso.getHoras()));
         holder.txtPrecioC.setText(String.format("Precio: " + curso.getPrecio()));
         holder.txtResponsableC.setText(String.format("Responsable: " + curso.getResponsable()));
 
         // Buttons
-        holder.btnCurso.setOnClickListener(view -> {
-            listener.onVer();
+        holder.btnCursoVer.setOnClickListener(view -> {
+            listener.onVer(curso.getId());
+        });
+
+        // Buttons
+        holder.btnCursoBorrar.setOnClickListener(view -> {
+            listener.onBorrar(curso.getId());
         });
     }
 
@@ -57,7 +66,7 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
 
     public static class CursoViewHolder extends RecyclerView.ViewHolder {
         TextView txtNombreC,txtPrecioC, txtResponsableC, txtHorasC;
-        Button btnCurso;
+        Button btnCursoVer, btnCursoBorrar;
 
         public CursoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,7 +76,8 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
             txtResponsableC = itemView.findViewById(R.id.txtResponsableC);
             txtHorasC = itemView.findViewById(R.id.txtHorasC);
 
-            btnCurso = itemView.findViewById(R.id.btnCurso);
+            btnCursoVer = itemView.findViewById(R.id.btnCursoVer);
+            btnCursoBorrar = itemView.findViewById(R.id.btnCursoBorrar);
         }
     }
 

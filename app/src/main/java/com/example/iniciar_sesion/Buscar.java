@@ -1,6 +1,5 @@
 package com.example.iniciar_sesion;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -14,11 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.iniciar_sesion.utils.ApiConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +25,8 @@ public class Buscar extends AppCompatActivity {
     EditText edtBuscarId, edtApellidos, edtNombres, edtTelefono, edtDireccion, edtEmail;
     Button btnBuscar, btnEliminar, btnActualizar, btnReiniciar;
     RequestQueue requestQueue;
+
+    String URL = ApiConfig.ALUMNOS;
 
     /**
      * Carga los datos necesarios para el funcionamiento de la logica del activity
@@ -49,7 +48,6 @@ public class Buscar extends AppCompatActivity {
         btnEliminar.setEnabled(false);
 
     }
-    private final String URL = "http://10.0.2.2:3000/alumnos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
