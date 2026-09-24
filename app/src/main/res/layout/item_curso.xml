@@ -25,19 +25,18 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txtHorasC"
+                android:id="@+id/txtResponsableC"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp" />
+                android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/txtPrecioC"
+                android:id="@+id/txtHorasC"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/txtResponsableC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                />
+
         </LinearLayout>
 
         <LinearLayout

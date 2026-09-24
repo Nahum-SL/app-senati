@@ -11,24 +11,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.iniciar_sesion.utils.ApiConfig;
+import com.example.iniciar_sesion.helpers.ApiConfig;
+import com.example.iniciar_sesion.utils.DialogUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Registrar extends AppCompatActivity {
 
-    EditText edtApellidosRE, edtNombresRE, edtTelefonoRE, edtDireccionRE,edtEmailRE;
+    EditText edtApellidosRE, edtNombresRE, edtTelefonoRE, edtDireccionRE, edtEmailRE;
     Button btnGuardar, btnCancelar;
     RequestQueue requestQueue;
-
+    JSONObject jsonAlumno;
     String URL = ApiConfig.ALUMNOS;
 
     /**
      * Carga los datos necesarios para el funcionamiento de la logica del activity
-     * */
+     *
+     */
     private void loadUI() {
         edtApellidosRE = findViewById(R.id.edtApellidosRE);
         edtNombresRE = findViewById(R.id.edtNombresRE);
@@ -43,34 +46,106 @@ public class Registrar extends AppCompatActivity {
     /**
      * Se encarga de verificar que todos los campos esten llenos
      * antes de enviar los datos
-     * */
+     *
+     */
     private boolean verificarVacios() {
-        if (edtApellidosRE.getText().toString().isEmpty()) {
+        if (edtApellidosRE.getText().toString().trim().isEmpty()) {
             edtApellidosRE.setError("Ingrese sus apellidos");
             edtApellidosRE.requestFocus();
             return false;
         }
-        if (edtNombresRE.getText().toString().isEmpty()) {
+        if (edtNombresRE.getText().toString().trim().isEmpty()) {
             edtNombresRE.setError("Ingrese sus nombres");
             edtNombresRE.requestFocus();
             return false;
         }
-        if (edtTelefonoRE.getText().toString().isEmpty()) {
+        if (edtTelefonoRE.getText().toString().trim().isEmpty()) {
             edtTelefonoRE.setError("Ingrese su telefono");
             edtTelefonoRE.requestFocus();
             return false;
         }
-        if (edtDireccionRE.getText().toString().isEmpty()) {
+        if (edtDireccionRE.getText().toString().trim().isEmpty()) {
             edtDireccionRE.setError("Ingrese su dirección");
             edtDireccionRE.requestFocus();
             return false;
         }
-        if (edtEmailRE.getText().toString().isEmpty()) {
+        if (edtEmailRE.getText().toString().trim().isEmpty()) {
             edtEmailRE.setError("Ingrese su email");
             edtEmailRE.requestFocus();
             return false;
         }
         return true;
+    }
+
+    /**
+     * Se encarga de gestionar el error que manda Volley
+     * segun la consulta enviada al Web Service
+     * */
+    private void gestionarError(VolleyError error) {
+        Log.e("CREAR", "Error Volley", error);
+
+        if (error.networkResponse != null) {
+            Log.e(
+                    "CREAR",
+                    "Código HTTP: " + error.networkResponse.statusCode
+            );
+
+            if (error.networkResponse.data != null) {
+                String respuesta = new String(
+                        error.networkResponse.data,
+                        java.nio.charset.StandardCharsets.UTF_8
+                );
+
+                Log.e("CREAR", "Respuesta servidor: " + respuesta);
+            }
+        }
+
+        Toast.makeText(
+                Registrar.this,
+                "Error al registrar alumno",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    /**
+    * Se encarga de notificar el mensaje del web service
+    * cuando la consulta haya sido correcta
+    * */
+    private void mandarConsulta(JSONObject response) {
+        try {
+            String mensaje = response.getString("message");
+            notificar(mensaje);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Construye los datos del objeto JSON
+     * */
+    private void construirJSON() {
+        jsonAlumno = new JSONObject();
+
+        // Usamos la clase Alumno para asignar los datos
+        Alumno alumno = new Alumno(
+                edtApellidosRE.getText().toString(),
+                edtNombresRE.getText().toString(),
+                edtTelefonoRE.getText().toString(),
+                edtDireccionRE.getText().toString(),
+                edtEmailRE.getText().toString()
+        );
+
+        // Obtenemos los datos al JSON
+        try {
+            jsonAlumno.put("apellidos", alumno.getApellidos());
+            jsonAlumno.put("nombres", alumno.getNombres());
+            jsonAlumno.put("telefono", alumno.getTelefono());
+            jsonAlumno.put("direccion", alumno.getDireccion());
+            jsonAlumno.put("email", alumno.getEmail());
+        } catch (JSONException e) {
+            Log.e("Registrar", "Error creando un JSON", e);
+        }
     }
 
     /**
@@ -103,7 +178,7 @@ public class Registrar extends AppCompatActivity {
 
         btnGuardar.setOnClickListener(view -> {
             if (verificarVacios()) {
-                registrarAlumno();
+                DialogUtils.confirmar(this, "¿Desea guardar el alumno?",this::registrarAlumno);
             }
         });
         btnCancelar.setOnClickListener(view -> {
@@ -115,73 +190,17 @@ public class Registrar extends AppCompatActivity {
      * Envia los datos ingresados del formulario a la base de datos
      * */
     private void registrarAlumno() {
-
-        // Usamos la clase Alumno para asignar los datos
-        Alumno alumno = new Alumno(
-                edtApellidosRE.getText().toString(),
-                edtNombresRE.getText().toString(),
-                edtTelefonoRE.getText().toString(),
-                edtDireccionRE.getText().toString(),
-                edtEmailRE.getText().toString()
-        );
-
         // Creamos un JSON que contendra los datos a enviar
-        JSONObject jsonObject = new JSONObject();
+        construirJSON();
 
-        // Obtenemos los datos al JSON
-        try {
-            jsonObject.put("apellidos", alumno.getApellidos());
-            jsonObject.put("nombres", alumno.getNombres());
-            jsonObject.put("telefono", alumno.getTelefono());
-            jsonObject.put("direccion", alumno.getDireccion());
-            jsonObject.put("email", alumno.getEmail());
-        } catch (JSONException e) {
-            Log.e("Registrar", "Error creando un JSON", e);
-            return;
-        };
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        JsonObjectRequest jsonAlumnoRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 URL,
-                jsonObject,
-                response -> {
-                        try {
-                            String mensaje = response.getString("message");
-
-                            notificar(mensaje);
-                            limpiar();
-
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                },
-                error -> {
-                    Log.e("CREAR", "Error Volley", error);
-
-                    if (error.networkResponse != null) {
-                        Log.e(
-                                "CREAR",
-                                "Código HTTP: " + error.networkResponse.statusCode
-                        );
-
-                        if (error.networkResponse.data != null) {
-                            String respuesta = new String(
-                                    error.networkResponse.data,
-                                    java.nio.charset.StandardCharsets.UTF_8
-                            );
-
-                            Log.e("CREAR", "Respuesta servidor: " + respuesta);
-                        }
-                    }
-
-                    Toast.makeText(
-                            Registrar.this,
-                            "Error al registrar alumno",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
+                jsonAlumno,
+                this::mandarConsulta,
+                this::gestionarError
         );
 
-        requestQueue.add(jsonObjectRequest);
+        requestQueue.add(jsonAlumnoRequest);
     }
 }

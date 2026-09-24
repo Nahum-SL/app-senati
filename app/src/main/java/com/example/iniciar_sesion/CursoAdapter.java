@@ -44,9 +44,8 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
     public void onBindViewHolder(@NonNull CursoViewHolder holder, int position) {
         Curso curso = listaCursos.get(position);
         holder.txtNombreC.setText(curso.getNombre());
-        holder.txtHorasC.setText(String.format("Horas: " + curso.getHoras()));
-        holder.txtPrecioC.setText(String.format("Precio: " + curso.getPrecio()));
         holder.txtResponsableC.setText(String.format("Responsable: " + curso.getResponsable()));
+        holder.txtHorasC.setText(String.format("Horas: " + curso.getHoras() + " " + "Precio: " + curso.getPrecio()));
 
         // Buttons
         holder.btnCursoVer.setOnClickListener(view -> {
@@ -65,14 +64,13 @@ public class CursoAdapter extends RecyclerView.Adapter<CursoAdapter.CursoViewHol
     }
 
     public static class CursoViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombreC,txtPrecioC, txtResponsableC, txtHorasC;
+        TextView txtNombreC, txtResponsableC, txtHorasC;
         Button btnCursoVer, btnCursoBorrar;
 
         public CursoViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtNombreC = itemView.findViewById(R.id.txtNombreC);
-            txtPrecioC = itemView.findViewById(R.id.txtPrecioC);
             txtResponsableC = itemView.findViewById(R.id.txtResponsableC);
             txtHorasC = itemView.findViewById(R.id.txtHorasC);
 
